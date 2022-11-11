@@ -7,17 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}} - Chat App</title>
     <script id="auth" src="/js/auth/auth.js" type="module"></script>
-    <script src="/js/login.js" defer type="module"></script>
+    <script src="/js/signup.js" defer type="module"></script>
 </head>
 
 <body>
     {{>header}}
-    <form id="loginForm">
+    <form id="signupForm">
+        <input type="text" placeholder="Name" name="name" required>
         <input type="text" placeholder="Email" name="email" required>
         <input type="password" placeholder="Password" name="password" required>
-        <button type="submit" id="loginFormButton">Login</button>
+        <button type="submit" id="signupFormButton">Signup</button>
     </form>
-    <a href="/signup">Signup</a>
+    <a href="/">Login</a>
     {{>footer}}
 </body>
 

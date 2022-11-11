@@ -1,3 +1,7 @@
+import api from './fetch/fetch.js';
+import toast from './toast/toast.js';
+import { setSession } from './session/session.js';
+
 const loginForm = document.querySelector('#loginForm');
 const loginFormButton = document.querySelector('#loginFormButton');
 
@@ -6,21 +10,13 @@ loginForm.addEventListener('submit', async (event) => {
     loginFormButton.disabled = true;
     const email = event.target.elements.email.value
     const password = event.target.elements.password.value
-    console.log(email, password);
 
-    const response = await fetch('/users/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: new Headers({
-            'Authorization': 'Bearer ',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        })
-    })
-    const myJson = await response.json();
-    if (myJson.error) {
+    const response = await api('/user/login', undefined, { email, password })
+    if (response.error) {
         loginFormButton.disabled = false;
-        return console.log(myJson.error);
+        toast(response.error)
+        return
     }
-
+    setSession(response.user, response.token)
+    location.href = '/chat'
 })

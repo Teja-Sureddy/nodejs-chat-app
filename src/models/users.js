@@ -57,6 +57,13 @@ userSchema.methods.generateAuthToken = async function () {
     return token
 }
 
+userSchema.methods.deleteAuthToken = async function (token) {
+    const user = this
+    const index = user.tokens.findIndex((eachToken) => eachToken.token === token)
+    if (index != -1) user.tokens.splice(index, 1)
+    return await user.save()
+}
+
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
     if (!user) throw new Error('invalid credentails')

@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import path from 'path';
 import hbs from 'hbs';
 import { fileURLToPath } from 'url';
+import './socket.js';
 
 const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -15,10 +16,6 @@ app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 app.use(express.static(assetsPath))
-
-app.get('', ((req, res) => {
-    res.render('index', { title: 'Home' })
-}))
 
 app.get('*', ((req, res) => {
     res.render('404', { title: '404' })
