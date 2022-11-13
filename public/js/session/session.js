@@ -48,6 +48,15 @@ export function getSessionToken() {
     } return null
 }
 
+export function getUser() {
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf('user=') == 0) return isJsonString(c.substring(5, c.length));
+    } return null
+}
+
 function isJsonString(str) {
     try {
         JSON.parse(str);

@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import path from 'path';
 import hbs from 'hbs';
 import { fileURLToPath } from 'url';
-import './socket.js';
+import './socket/socket.js';
 
 const port = process.env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
