@@ -4,9 +4,9 @@ import { auth } from '../middleware/auth.js'
 
 export const messageRouter = new express.Router();
 
-messageRouter.get('/messages', auth, async (req, res) => {
+messageRouter.post('/messages', auth, async (req, res) => {
     try {
-        const messages = await Message.find()
+        const messages = await Message.find({ room: req.body.room })
         res.status(201).send(messages)
     }
     catch (error) {

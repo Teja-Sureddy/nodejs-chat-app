@@ -10,7 +10,8 @@ const chatSection = document.getElementById('chat-section')
 const messageForm = document.getElementById('message-form')
 const sendButton = document.getElementById('send-button')
 var to;
-export var messages;
+var usersList;
+export var messages = {};
 
 chatContainer.style.display = "none";
 
@@ -19,11 +20,13 @@ document.querySelector('#logout').addEventListener('click', async (event) => {
     deleteSession()
 })
 
-const renderUsers = async () => {
-    const users = await api('/users', 'GET', undefined)
-    users.forEach(eachUser => {
+export const renderUsers = async () => {
+    usersList = await api('/users', 'GET', undefined)
+    usersList.forEach(eachUser => {
+        eachUser.status = false;
+        eachUser.notifications = 0;
         let element = document.createElement("div");
-        element.innerHTML = eachUser.name + ' OFFLINE';
+        element.innerHTML = changeUserText(eachUser);
         element.setAttribute('id', eachUser._id);
         element.addEventListener('click', (event) => {
             selectUser(eachUser)
@@ -33,30 +36,41 @@ const renderUsers = async () => {
     })
 }
 
-const getMessages = async () => {
-    messages = await api('/messages', 'GET', undefined)
-    messages = messages.reduce((obj, item) => Object.assign(obj, { [item.room]: messages.filter((eachMessage) => eachMessage.room === item.room) }), {});
+export const getMessages = async (room) => {
+    const messagesList = await api('/messages', 'POST', { room })
+    messages[room] = messagesList
 }
 
-export const setStatus = (users = null, status = 0) => {
-    users.forEach((eachUser) => {
-        let element = document.getElementById(eachUser._id)
-        if (element) {
-            return element.innerHTML = eachUser.name + (status ? ' ONLINE' : ' OFFLINE');
-        }
-    })
+export const setStatus = (users = null, status = false) => {
+    if (users.length > 0) {
+        users.forEach((eachUser) => {
+            let element = document.getElementById(eachUser._id)
+            if (element) {
+                let user = usersList.find((user) => user._id === eachUser._id)
+                user.status = status;
+                user.notifications = user.notifications ? user.notifications : 0;
+                element.innerHTML = changeUserText(user);
+            }
+        })
+    }
 }
 
-const selectUser = (user) => {
-    chatContainer.style.display = "block";
-    chatSection.innerHTML = '';
+const selectUser = async (user) => {
     to = user._id;
+    chatSection.innerHTML = '';
     chatHeader.innerHTML = "Chat - " + user.name;
+    chatContainer.style.display = "block";
     const room = combainTwoStringsBySort(currentUser._id, to)
-    if (messages[room] && messages[room].length > 0) {
+    if (!messages[room]) await getMessages(room)
+    if (messages[room].length > 0) {
         messages[room].forEach(eachMessage => {
             append(eachMessage)
         })
+    }
+    user.notifications = 0
+    let element = document.getElementById(user._id)
+    if (element) {
+        element.innerHTML = changeUserText(user)
     }
 }
 
@@ -64,6 +78,20 @@ export const appendSelectedUserMessage = (message) => {
     if (to === message.to || to === message.from) {
         append(message)
     }
+    else {
+        let user = usersList.find((user) => message.from === user._id)
+        if (user) {
+            user.notifications = user.notifications ? user.notifications + 1 : 1;
+            let element = document.getElementById(message.from)
+            if (element) {
+                element.innerHTML = changeUserText(user);
+            }
+        }
+    }
+}
+
+const changeUserText = (user) => {
+    return user.name + (user.status ? '<div class="online"></div>' : '<div class="offline"></div> ') + (user.notifications ? '<div class="notification">' + user.notifications + '</div>' : '')
 }
 
 const append = (eachMessage) => {
@@ -90,5 +118,4 @@ const combainTwoStringsBySort = (from, to) => {
     return (compare === -1) ? from + to : to + from
 }
 
-getMessages()
 renderUsers()

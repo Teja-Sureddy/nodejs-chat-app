@@ -1,9 +1,9 @@
 const socket = io()
 import { getUser } from '../session/session.js';
-import { messages, setStatus, appendSelectedUserMessage } from '../chat.js';
+import { getMessages, messages, setStatus, appendSelectedUserMessage } from '../chat.js';
 
 var currentUser = getUser();
-document.getElementById('user-header').innerHTML = 'User - ' + currentUser.name;
+document.getElementById('user-header').innerHTML = 'Welcome ' + currentUser.name;
 
 socket.emit('establishConnection', currentUser, (users) => {
     setStatus(users, true)
@@ -26,8 +26,8 @@ export const sendMessage = async (user_id, message) => {
     socket.emit('sendMessage', currentUser._id, user_id, message)
 }
 
-socket.on('sendMessage', (message) => {
-    if (messages[message.room] && messages[message.room].length > 0) messages[message.room].push(message)
-    else messages[message.room] = Array(message)
+socket.on('sendMessage', async (message) => {
+    if (!messages[message.room]) await getMessages(message.room)
+    else messages[message.room].push(message)
     appendSelectedUserMessage(message)
 })

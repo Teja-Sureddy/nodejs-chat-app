@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}} - Chat App</title>
-    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/chat.css">
     <script id="auth" auth="true" src="/js/auth/auth.js" type="module"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" defer></script>
     <script src="/socket.io/socket.io.js" defer></script>
@@ -16,16 +16,27 @@
 
 <body>
     {{>header}}
-    <button id="logout">Logout</button>
-    <h1 id="user-header">users</h1>
-    <div id="users"></div>
-    <div id="chat-container">
-        <h1 id="chat-header">Chat</h1>
-        <form id="message-form">
-            <input type="text" placeholder="Message" name="message" required>
-            <button type="submit" id="send-button">Send</button>
-        </form>
-        <div id="chat-section"></div>
+    <div>
+        <div class="logout">
+            <button id="logout">Logout</button>
+        </div>
+        <h1 id="user-header">Welcome</h1>
+        <div class="chat-section">
+            <div class="user-section">
+                <h3>Users</h3>
+                <div id="users"></div>
+            </div>
+            <div class="message-section">
+                <div id="chat-container">
+                    <h1 id="chat-header">Chat</h1>
+                    <div id="chat-section"></div>
+                    <form id="message-form">
+                        <input type="text" placeholder="Message" name="message" required>
+                        <button type="submit" id="send-button">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
     {{>footer}}
 </body>
