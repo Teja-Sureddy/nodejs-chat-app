@@ -1,4 +1,5 @@
 const toastElement = document.querySelector('#toast')
+toastElement.style.display = 'none';
 
 export default function toast(message) {
     toastElement.innerHTML = message.split(":").at(-1)

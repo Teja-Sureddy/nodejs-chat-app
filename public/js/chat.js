@@ -5,7 +5,6 @@ import { createRoom, sendMessage } from './socket/socket.js';
 const currentUser = getUser();
 const usersElement = document.querySelector('#users')
 const chatContainer = document.getElementById('chat-container')
-const chatHeader = document.getElementById('chat-header')
 const chatSection = document.getElementById('chat-section')
 const messageForm = document.getElementById('message-form')
 const sendButton = document.getElementById('send-button')
@@ -58,7 +57,6 @@ export const setStatus = (users = null, status = false) => {
 const selectUser = async (user) => {
     to = user._id;
     chatSection.innerHTML = '';
-    chatHeader.innerHTML = "Chat - " + user.name;
     chatContainer.style.display = "block";
     const room = combainTwoStringsBySort(currentUser._id, to)
     if (!messages[room]) await getMessages(room)
@@ -72,6 +70,8 @@ const selectUser = async (user) => {
     if (element) {
         element.innerHTML = changeUserText(user)
     }
+    chatSection.scrollTop = chatSection.scrollHeight
+    highlightChatUser(user._id)
 }
 
 export const appendSelectedUserMessage = (message) => {
@@ -101,6 +101,7 @@ const append = (eachMessage) => {
     division.appendChild(paragraph)
     eachMessage.from === currentUser._id ? division.classList.add('right') : division.classList.add('left')
     chatSection.appendChild(division);
+    scrollToBottom()
 }
 
 messageForm.addEventListener('submit', async (event) => {
@@ -116,6 +117,22 @@ messageForm.addEventListener('submit', async (event) => {
 const combainTwoStringsBySort = (from, to) => {
     const compare = from.localeCompare(to);
     return (compare === -1) ? from + to : to + from
+}
+
+const scrollToBottom = () => {
+    const newMessageHeight = chatSection.offsetHeight + parseInt(getComputedStyle(chatSection.lastElementChild).marginBottom)
+    const containerHeight = chatSection.scrollHeight
+    if (containerHeight - newMessageHeight <= chatSection.scrollTop + chatSection.offsetHeight) chatSection.scrollTop = chatSection.scrollHeight
+}
+
+const highlightChatUser = (id) => {
+    var children = usersElement.children
+    for (let index = 0; index < children.length; index++) {
+        if (children[index].classList.contains('selectedUser')) {
+            children[index].classList.remove('selectedUser');
+        }
+    }
+    document.getElementById(id).classList.add('selectedUser');
 }
 
 renderUsers()
