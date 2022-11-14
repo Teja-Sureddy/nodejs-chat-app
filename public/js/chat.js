@@ -97,7 +97,7 @@ const changeUserText = (user) => {
 const append = (eachMessage) => {
     let division = document.createElement("div");
     let paragraph = document.createElement("p");
-    paragraph.innerHTML = moment(eachMessage.createdAt).format("h:mm a") + ' - ' + eachMessage.message;
+    paragraph.innerHTML = eachMessage.message + '<span class="date">' + moment(eachMessage.createdAt).format("h:mm a") + '</span>';
     division.appendChild(paragraph)
     eachMessage.from === currentUser._id ? division.classList.add('right') : division.classList.add('left')
     chatSection.appendChild(division);

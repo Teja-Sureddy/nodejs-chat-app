@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
         validate(val) {
-            if (!validator.isEmail(val)) throw new Error('In-valid E-mail.')
+            if (!validator.isEmail(val)) throw new Error('In-valid E-mail address')
         }
     },
     password: {
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         validate(val) {
-            if (!validator.isStrongPassword(val)) throw new Error('Password not to strong.')
+            if (!validator.isStrongPassword(val)) throw new Error('Password is not too strong')
         }
     },
     avatar: {

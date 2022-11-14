@@ -1,6 +1,4 @@
 import express from 'express';
-import { User } from '../../models/users.js'
-import { auth } from '../../middleware/auth.js'
 
 export const clientRouter = new express.Router();
 
